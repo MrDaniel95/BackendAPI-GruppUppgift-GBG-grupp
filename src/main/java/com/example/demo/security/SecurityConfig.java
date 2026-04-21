@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
 import com.example.demo.repo.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,12 +12,23 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+
+
 
 @Configuration
 public class SecurityConfig {
 
+    private final JwtUtil jwtUtil;
+
+
+    public SecurityConfig(JwtUtil jwtUtil){
+        this.jwtUtil = jwtUtil;
+    }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
@@ -25,8 +37,13 @@ public class SecurityConfig {
                         .requestMatchers("/", "/index.html", "/public", "/auth/login", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
-
+         .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
+                );
+        JwtAuthenticationFilter jwtFilter = new JwtAuthenticationFilter(jwtUtil, userDetailsService);
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
