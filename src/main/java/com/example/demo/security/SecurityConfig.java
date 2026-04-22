@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -25,7 +26,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/index.html", "/public", "/auth/login", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -51,5 +53,9 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
     }
 }
