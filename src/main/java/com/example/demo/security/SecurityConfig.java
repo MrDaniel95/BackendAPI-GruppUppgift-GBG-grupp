@@ -34,10 +34,12 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index.html", "/public", "/auth/login", "/h2-console/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/public", "/auth/login", "/h2-console/**", "/oauth2/**", "/login/oauth2/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/messages").authenticated()
+                        .requestMatchers("/private").authenticated()
                         .anyRequest().authenticated()
                 )
-         .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                .oauth2Login(oauth2 -> {})
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
@@ -62,15 +64,9 @@ public class SecurityConfig {
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
-    // TODO:
-    // Lägg till JWT filter
-    // Lägg till oauth2Login()
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
     }
 }
