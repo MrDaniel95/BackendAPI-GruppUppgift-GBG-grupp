@@ -1,9 +1,9 @@
-
 package com.example.demo.model;
 
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -13,7 +13,6 @@ public class User {
     private String username;
     private String password;
 
-    // TODO: Lägg till roller om ni vill
 
     public String getUsername() { return username; }
     public String getPassword() { return password; }

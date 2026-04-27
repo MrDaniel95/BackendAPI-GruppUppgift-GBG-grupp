@@ -1,0 +1,9 @@
+# Sensitive config - never push credentials to GitHub
+application.properties
+
+# Maven
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml

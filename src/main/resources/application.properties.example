@@ -1,0 +1,30 @@
+# Den här filen är en mall för application.properties
+# Fyll i dina egna värden!
+# OBS: Pusha ALDRIG application.properties till GitHub!
+
+spring.h2.console.enabled=true
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.jpa.hibernate.ddl-auto=create
+
+# --- OAuth2 med GitHub ---
+# Följ dessa steg för att få era egna credentials:
+#
+# Steg 1: Gå till github.com och logga in
+# Steg 2: Klicka på din profilbild (uppe till höger) -> Settings
+# Steg 3: Scrolla ner i menyn och klicka på "Developer settings"
+# Steg 4: Klicka på "OAuth Apps" -> "New OAuth App"
+
+# Steg 5: Fyll i följande:
+#           Application name: T.ex: "JWT OAuth2 Demo"
+#           Homepage URL: http://localhost:8080
+#           Authorization callback URL: http://localhost:8080/login/oauth2/code/github
+
+# Steg 6: Klicka "Register application"
+# Steg 7: Kopiera "Client ID" och klistra in nedan
+# Steg 8: Klicka "Generate a new client secret", kopiera och klistra in nedan
+#
+# OBS: Om du tappar bort client secret måste du generera ett nytt, det visas bara en gång!
+
+spring.security.oauth2.client.registration.github.client-id=DIN_CLIENT_ID_HÄR
+spring.security.oauth2.client.registration.github.client-secret=DIN_CLIENT_SECRET_HÄR
+spring.security.oauth2.client.registration.github.scope=user:email
