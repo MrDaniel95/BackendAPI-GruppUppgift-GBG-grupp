@@ -41,8 +41,3 @@ public class AuthController {
         }
     }
 }
-// TODO:
-// 1. Ta emot username + password
-// 2. Autentisera via Spring
-// 3. Generera JWT
-// 4. Returnera token

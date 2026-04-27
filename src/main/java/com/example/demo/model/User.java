@@ -13,7 +13,6 @@ public class User {
     private String username;
     private String password;
 
-    // TODO: Lägg till roller om ni vill
 
     public String getUsername() { return username; }
     public String getPassword() { return password; }
