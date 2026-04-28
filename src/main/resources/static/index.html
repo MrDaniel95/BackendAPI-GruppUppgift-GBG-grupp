@@ -20,25 +20,46 @@
 <button onclick="getPublic()">Get Public</button>
 <button onclick="getPrivate()">Get Private</button>
 
+<h2>Status</h2>
+<pre id="output">No action yet</pre>
+
 <script>
 let token = "";
 
+function show(message) {
+    document.getElementById('output').textContent = message;
+}
+
 async function login() {
-    const res = await fetch('/login', {
+    const res = await fetch('/auth/login', {
         method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
             username: document.getElementById('user').value,
             password: document.getElementById('pass').value
         })
     });
 
-    token = await res.text();
+    if (!res.ok) {
+        const errorText = await res.text();
+        show('Login failed: ' + res.status + ' ' + errorText);
+        console.error('Login failed:', res.status, errorText);
+        return;
+    }
+
+    const data = await res.json();
+    token = data.token;
+    show('Login successful. Token received.');
     console.log("TOKEN:", token);
 }
 
 async function getPublic() {
     const res = await fetch('/public');
-    console.log(await res.json());
+    const text = await res.text();
+    show('Public response: ' + res.status + '\n' + text);
+    console.log(text);
 }
 
 async function getPrivate() {
@@ -47,7 +68,9 @@ async function getPrivate() {
             "Authorization": "Bearer " + token
         }
     });
-    console.log(await res.json());
+    const text = await res.text();
+    show('Private response: ' + res.status + '\n' + text);
+    console.log(text);
 }
 </script>
 
