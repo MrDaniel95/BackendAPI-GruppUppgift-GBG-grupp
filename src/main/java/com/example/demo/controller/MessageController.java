@@ -2,7 +2,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Message;
-import com.example.demo.repo.MessageRepository;
+import com.example.demo.service.MessageService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,24 +10,24 @@ import java.util.List;
 @RestController
 public class MessageController {
 
-    private final MessageRepository repo;
+    private final MessageService messageService;
 
-    public MessageController(MessageRepository repo) {
-        this.repo = repo;
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
     }
 
     @GetMapping("/public")
     public List<Message> getPublic() {
-        return repo.findAll().stream().filter(Message::isPublic).toList();
+        return messageService.getPublicMessages();
     }
 
     @GetMapping("/private")
     public List<Message> getPrivate() {
-        return repo.findAll();
+        return messageService.getAllMessages();
     }
 
     @PostMapping("/messages")
     public Message create(@RequestBody Message message) {
-        return repo.save(message);
+        return messageService.createMessage(message);
     }
 }
