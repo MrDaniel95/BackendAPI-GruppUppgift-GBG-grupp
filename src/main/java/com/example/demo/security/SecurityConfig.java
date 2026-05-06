@@ -4,7 +4,6 @@ import com.example.demo.repo.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.*;
@@ -27,6 +26,8 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/public", "/auth/login", "/h2-console/**").permitAll()
+                        .requestMatchers("/private").authenticated()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/messages").authenticated()
                         .anyRequest().authenticated()
                 )
 
@@ -34,7 +35,7 @@ public class SecurityConfig {
 
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 
-                .oauth2Login(Customizer.withDefaults());
+                ;
 
         return http.build();
     }
